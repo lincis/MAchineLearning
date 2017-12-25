@@ -22,7 +22,11 @@ for iter = 1:num_iters
     %   delta(j) = sum(alpha * (1/m) * (X*theta - y)'*X(:,j));
     % end
     % delta = sum(alpha * (1/m) * (X*theta - y).*X,1);
-    delta = (1/m) * sum((X*theta - y).*X,1)';
+    m1 = repmat((X*theta - y),1,size(X,2));
+    size(m1)
+    size(X)
+    delta = (1/m) * sum(m1.*X,1)';
+    % delta = (1/m) * sum(repmat((X*theta - y),size(X,2)).*X,1)';
     theta = theta - alpha * delta;
     % break
 
