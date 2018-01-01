@@ -39,10 +39,48 @@ reference(sub2ind(size(reference),1:m,y')) = 1;
 J = 1/m * sum(sum(-reference .* log(a3) - (1 - reference) .* log(1 - a3))) + ...
     lambda / (2 * m) * (sum ( Theta1(:,2:input_layer_size + 1)(:) .^2 ) + sum( Theta2(:,2:hidden_layer_size + 1)(:) .^2 ) );
 
-for i = 1:m
-    a1 = X(i)
-    
-end
+Delta2 = zeros(size(Theta2));
+Delta1 = zeros(size(Theta1));
+%for i = 1:m
+%    a1 = (X(i,:))';
+%    printf("a1 = %d x %d\n", size(a1));
+%    z2 = Theta1 * a1;
+%    printf("z2 = %d x %d\n", size(z2));
+%    a2 = [1; sigmoid(z2)];
+%    printf("a2 = %d x %d\n", size(a2));
+%    z3 = Theta2 * a2;
+%    printf("z3 = %d x %d\n", size(z3));
+%    a3 = sigmoid(z3);
+%    printf("a3 = %d x %d\n", size(a3));
+%    printf("ref full = %d x %d\n", size(reference));
+%    printf("ref slice = %d x %d\n", size(reference(i,:)));
+%    delta3 = a3 - reference(i,:)';
+%    printf("d3 = %d x %d\n", size(delta3));
+%    delta2 = (Theta2' * delta3)  .* [0; sigmoidGradient(z2)];
+%    printf("d2 = %d x %d\n", size(delta2));
+%    Delta2 = Delta2 + delta3 * a2';
+%    printf("D2 = %d x %d\n", size(Delta2));
+%    Delta1 = Delta1 + delta2(2:end) * a1';
+%    printf("D1 = %d x %d\n", size(Delta1));
+%    break
+%end
+a1 = X';
+z2 = Theta1 * a1;
+a2 = [ones(1,size(z2,2)); sigmoid(z2)];
+z3 = Theta2 * a2;
+a3 = sigmoid(z3);
+delta3 = a3 - reference';
+delta2 = (Theta2' * delta3) .* [zeros(1,size(z2,2)); sigmoidGradient(z2)];
+Delta2 = delta3 * a2';
+Delta1 = delta2(2:end,:) * a1';
+
+Theta1_grad = 1/m * Delta1;
+Theta2_grad = 1/m * Delta2;
+Theta1_grad(:,2:end) = Theta1_grad(:,2:end) + lambda/m * Theta1(:,2:end);
+Theta2_grad(:,2:end) = Theta2_grad(:,2:end) + lambda/m * Theta2(:,2:end);
+%printf("Theta1_grad = %d x %d\n", size(Theta1_grad));
+%printf("Theta2_grad = %d x %d\n", size(Theta2_grad));
+
 
 % ====================== YOUR CODE HERE ======================
 % Instructions: You should complete the code by working through the

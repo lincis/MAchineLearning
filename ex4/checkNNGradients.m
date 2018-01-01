@@ -20,12 +20,15 @@ m = 5;
 % We generate some 'random' test data
 Theta1 = debugInitializeWeights(hidden_layer_size, input_layer_size);
 Theta2 = debugInitializeWeights(num_labels, hidden_layer_size);
+%printf("T1 = %d x %d\n", size(Theta1));
+%printf("T2 = %d x %d\n", size(Theta2));
 % Reusing debugInitializeWeights to generate X
 X  = debugInitializeWeights(m, input_layer_size - 1);
 y  = 1 + mod(1:m, num_labels)';
 
 % Unroll parameters
 nn_params = [Theta1(:) ; Theta2(:)];
+%printf("nn = %d x %d\n", size(nn_params));
 
 % Short hand for cost function
 costFunc = @(p) nnCostFunction(p, input_layer_size, hidden_layer_size, ...
